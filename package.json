@@ -1,0 +1,33 @@
+{
+  "name": "wolf-logic-mcp-mem",
+  "version": "1.0.0",
+  "description": "A local memory MCP server that enables persistent memory for AI assistants through a knowledge graph - truly open source and local",
+  "type": "module",
+  "main": "dist/index.js",
+  "bin": {
+    "wolf-logic-mcp-mem": "dist/index.js"
+  },
+  "scripts": {
+    "build": "tsc",
+    "prepare": "npm run build",
+    "watch": "tsc --watch",
+    "start": "node dist/index.js"
+  },
+  "keywords": [
+    "mcp",
+    "memory",
+    "knowledge-graph",
+    "local",
+    "open-source",
+    "ai-assistant"
+  ],
+  "author": "Wolf Logic",
+  "license": "Apache-2.0",
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.0.0"
+  },
+  "devDependencies": {
+    "@types/node": "^22.0.0",
+    "typescript": "^5.0.0"
+  }
+}
