@@ -55,8 +55,11 @@ This MCP memory server handles potentially sensitive data. Follow these security
 If you discover a security vulnerability in this project, please report it responsibly:
 
 1. **Do not** open a public issue
-2. Email the maintainer directly with details
-3. Allow time for the vulnerability to be patched before public disclosure
+2. Contact the repository owner via GitHub's private vulnerability reporting feature or by emailing the security contact listed in the repository settings
+3. Include detailed information about the vulnerability and steps to reproduce
+4. Allow reasonable time for the vulnerability to be patched before public disclosure
+
+For contact information, please check the repository's `.github/SECURITY.md` or contact the repository owner directly through GitHub.
 
 ## Security Updates
 
