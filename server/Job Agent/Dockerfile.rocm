@@ -1,0 +1,44 @@
+FROM rocm/pytorch:latest
+
+WORKDIR /app
+
+# Install system dependencies
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    python3.12 \
+    python3-pip \
+    python3-venv \
+    git \
+    curl \
+    wget \
+    && rm -rf /var/lib/apt/lists/*
+
+# Create virtual environment
+RUN python3 -m venv /opt/venv
+ENV PATH="/opt/venv/bin:$PATH"
+
+# Copy and install requirements
+COPY server/requirements.txt .
+RUN pip install --no-cache-dir -r requirements.txt
+
+# Copy Job Agent code
+COPY server/Job\ Agent /app/
+
+# Set environment for AMD ROCM
+ENV HIP_VISIBLE_DEVICES=0
+ENV HIP_DEVICE_ORDER=PCI
+ENV ROCM_HOME=/opt/rocm
+
+# AMD GPU optimization
+ENV OMP_NUM_THREADS=8
+ENV MKL_NUM_THREADS=8
+
+# Expose port
+EXPOSE 8000
+
+# Health check
+HEALTHCHECK --interval=30s --timeout=10s --start-period=5s --retries=3 \
+    CMD python3 -c "import torch; assert torch.cuda.is_available()" || exit 1
+
+# Run job agent
+CMD ["python3", "ollama_job_rocm.py"]
+

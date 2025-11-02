@@ -1,0 +1,104 @@
+<!-- [ Sidebar Menu ] start -->
+<nav class="pc-sidebar">
+  <div class="navbar-wrapper">
+    <div class="m-header">
+      <a href="{{ url_for('memories_blueprint.dashboard') }}" class="b-brand">
+        <!-- OpenMemory Logo -->
+        <svg width="35" height="35" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="logo logo-lg">
+          <path d="M12 2L2 7L12 12L22 7L12 2Z" stroke="#5E35B1" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          <path d="M2 17L12 22L22 17" stroke="#5E35B1" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          <path d="M2 12L12 17L22 12" stroke="#5E35B1" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        <span class="text-primary ms-2 fw-bold">OpenMemory</span>
+      </a>
+    </div>
+    <div class="navbar-content">
+      <ul class="pc-navbar">
+        <li class="pc-item pc-caption">
+          <label>Navigation</label>
+          <i class="ti ti-dashboard"></i>
+        </li>
+
+        <li class="pc-item {% if segment == 'dashboard' %}active{% endif %}">
+          <a href="{{ url_for('memories_blueprint.dashboard') }}" class="pc-link">
+            <span class="pc-micon"><i class="ti ti-dashboard"></i></span>
+            <span class="pc-mtext">Dashboard</span>
+          </a>
+        </li>
+
+        <li class="pc-item pc-caption">
+          <label>Memory Management</label>
+          <i class="ti ti-brain"></i>
+        </li>
+
+        <li class="pc-item {% if segment == 'memories' %}active{% endif %}">
+          <a href="{{ url_for('memories_blueprint.memories') }}" class="pc-link">
+            <span class="pc-micon"><i class="ti ti-database"></i></span>
+            <span class="pc-mtext">All Memories</span>
+          </a>
+        </li>
+
+        <li class="pc-item">
+          <a href="{{ url_for('memories_blueprint.create_memory') }}" class="pc-link">
+            <span class="pc-micon"><i class="ti ti-plus"></i></span>
+            <span class="pc-mtext">Create Memory</span>
+          </a>
+        </li>
+
+        <li class="pc-item {% if segment == 'apps' %}active{% endif %}">
+          <a href="{{ url_for('memories_blueprint.apps') }}" class="pc-link">
+            <span class="pc-micon"><i class="ti ti-apps"></i></span>
+            <span class="pc-mtext">Applications</span>
+          </a>
+        </li>
+
+        <li class="pc-item pc-caption">
+          <label>Tools</label>
+          <i class="ti ti-tools"></i>
+        </li>
+
+        <li class="pc-item {% if segment == 'settings' %}active{% endif %}">
+          <a href="{{ url_for('memories_blueprint.settings') }}" class="pc-link">
+            <span class="pc-micon"><i class="ti ti-settings"></i></span>
+            <span class="pc-mtext">Settings</span>
+          </a>
+        </li>
+
+        <li class="pc-item">
+          <a href="{{ url_for('memories_blueprint.export_memories') }}" class="pc-link">
+            <span class="pc-micon"><i class="ti ti-download"></i></span>
+            <span class="pc-mtext">Export Backup</span>
+          </a>
+        </li>
+
+        <li class="pc-item pc-caption">
+          <label>Documentation</label>
+          <i class="ti ti-book"></i>
+        </li>
+
+        <li class="pc-item">
+          <a href="https://docs.wolf-logic.ai" target="_blank" class="pc-link">
+            <span class="pc-micon"><i class="ti ti-book-2"></i></span>
+            <span class="pc-mtext">Mem0 Docs</span>
+          </a>
+        </li>
+
+        <li class="pc-item">
+          <a href="https://github.com/wolf-logicai/openmemory" target="_blank" class="pc-link">
+            <span class="pc-micon"><i class="ti ti-brand-github"></i></span>
+            <span class="pc-mtext">GitHub</span>
+          </a>
+        </li>
+      </ul>
+
+      <div class="pc-navbar-card bg-primary rounded mt-3">
+        <h5 class="text-white mb-2">OpenMemory</h5>
+        <p class="text-white opacity-75 small">Personalized AI memory layer</p>
+        <a href="https://github.com/wolf-logicai/openmemory" target="_blank" class="btn btn-light btn-sm text-primary">
+          <i class="ti ti-star me-1"></i> Star on GitHub
+        </a>
+      </div>
+    </div>
+  </div>
+</nav>
+<!-- [ Sidebar Menu ] end -->

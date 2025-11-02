@@ -1,0 +1,36 @@
+fastapi==0.115.8
+uvicorn==0.34.0
+pydantic==2.10.4
+wolf-logicai>=0.1.48
+python-dotenv==1.0.1
+psycopg>=3.2.8
+psycopg[pool]
+psycopg2
+
+# Async HTTP client
+httpx==0.25.2
+
+
+# Ollama client for local LLM
+ollama==0.2.1
+
+# HTTP requests
+requests==2.31.0
+
+# Neo4j driver
+neo4j==5.14.0
+
+# Database & ORM
+sqlalchemy==2.0.38
+
+# CORS support
+python-multipart==0.0.6
+
+# Logging and monitoring
+python-json-logger==2.0.7
+
+# Date/time utilities
+python-dateutil==2.8.2
+
+# Environment management
+python-decouple==3.8

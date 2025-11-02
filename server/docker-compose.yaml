@@ -1,0 +1,137 @@
+name: wolf-logic-dev
+
+services:
+  # FastAPI Memory API with Redis caching
+  wolf-logic:
+    build:
+      context: ..  # Set context to parent directory
+      dockerfile: server/dev.Dockerfile
+    ports:
+      - "8888:8000"
+    env_file:
+      - .env
+    networks:
+      - wolf-logic_network
+    volumes:
+      - ./history:/app/history      # History db location
+      - .:/app                      # Server code - auto-reload
+      - ../wolf-logic:/app/packages/wolf-logic  # Mem0 library - auto-reload
+    depends_on:
+      postgres:
+        condition: service_healthy
+      neo4j:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    command: uvicorn main:app --host 0.0.0.0 --port 8000 --reload
+    environment:
+      - PYTHONDONTWRITEBYTECODE=1
+      - PYTHONUNBUFFERED=1
+      - REDIS_URL=redis://redis:6379
+
+  # Celery Worker for background tasks
+  celery-worker:
+    build:
+      context: ..
+      dockerfile: server/dev.Dockerfile
+    networks:
+      - wolf-logic_network
+    volumes:
+      - .:/app
+      - ../wolf-logic:/app/packages/wolf-logic
+    depends_on:
+      - redis
+      - postgres
+    command: celery -A celery_config worker -l info
+    environment:
+      - PYTHONDONTWRITEBYTECODE=1
+      - PYTHONUNBUFFERED=1
+      - REDIS_URL=redis://redis:6379
+
+  # Celery Beat for scheduled tasks
+  celery-beat:
+    build:
+      context: ..
+      dockerfile: server/dev.Dockerfile
+    networks:
+      - wolf-logic_network
+    volumes:
+      - .:/app
+      - ../wolf-logic:/app/packages/wolf-logic
+    depends_on:
+      - redis
+      - postgres
+    command: celery -A celery_config beat -l info --scheduler django_celery_beat.schedulers:DatabaseScheduler
+    environment:
+      - PYTHONDONTWRITEBYTECODE=1
+      - PYTHONUNBUFFERED=1
+      - REDIS_URL=redis://redis:6379
+
+  # Redis Cache & Session Store
+  redis:
+    image: redis:7-alpine
+    restart: unless-stopped
+    networks:
+      - wolf-logic_network
+    ports:
+      - "6379:6379"
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    volumes:
+      - redis_data:/data
+    command: redis-server --appendonly yes
+
+  # PostgreSQL with PgVector
+  postgres:
+    image: ankane/pgvector:v0.5.1
+    restart: on-failure
+    shm_size: "128mb"
+    networks:
+      - wolf-logic_network
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+    healthcheck:
+      test: ["CMD", "pg_isready", "-q", "-d", "postgres", "-U", "postgres"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    volumes:
+      - postgres_db:/var/lib/postgresql/data
+    ports:
+      - "8432:5432"
+
+  # Neo4j Graph Database
+  neo4j:
+    image: neo4j:5.26.4
+    networks:
+      - wolf-logic_network
+    healthcheck:
+      test: wget http://localhost:7687 || exit 1
+      interval: 1s
+      timeout: 10s
+      retries: 20
+      start_period: 90s
+    ports:
+      - "8474:7474" # HTTP
+      - "8687:7687" # Bolt
+    volumes:
+      - neo4j_data:/data
+    environment:
+      - NEO4J_AUTH=neo4j/wolf-logicgraph
+      - NEO4J_PLUGINS=["apoc"]
+      - NEO4J_apoc_export_file_enabled=true
+      - NEO4J_apoc_import_file_enabled=true
+      - NEO4J_apoc_import_file_use__neo4j__config=true
+
+volumes:
+  neo4j_data:
+  postgres_db:
+  redis_data:
+
+networks:
+  wolf-logic_network:
+    driver: bridge

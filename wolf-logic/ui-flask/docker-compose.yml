@@ -1,0 +1,46 @@
+services:
+  wolf-logic_store:
+    image: qdrant/qdrant:latest
+    restart: unless-stopped
+    ports:
+      - "6333:6333"
+    volumes:
+      - qdrant_data:/wolf-logic/storage
+
+  openmemory-mcp:
+    image: wolf-logic/openmemory-mcp:latest
+    environment:
+      - OLLAMA_URL=${OPENAI_API_KEY:-your-openai-api-key-here}
+      - USER=cadillacthewolf
+      - QDRANT_HOST=wolf-logic_store
+      - QDRANT_PORT=6333
+    depends_on:
+      - wolf-logic_store
+    ports:
+      - "8765:8765"
+    volumes:
+      - openmemory_db:/usr/src/wolf-logic
+
+  wolf-logic_ui:
+    build: .
+    container_name: wolf-logic_ui
+    ports:
+      - "3000:3000"
+    environment:
+      - MEMORY_API_URL=http://wolf-logic-mcp:8765
+      - USER_ID=cadillacthewolf
+      - PGVECTOR_URL=postgresql://postgres:postgres@100.110.82.181:8432/memories
+    depends_on:
+      - openmemory-mcp
+    restart: unless-stopped
+    networks:
+      - default
+      - wolf-logic-dev_wolf-logic_network
+
+networks:
+  wolf-logic-dev_wolf-logic_network:
+    external: true
+
+volumes:
+  qdrant_data:
+  openmemory_db:

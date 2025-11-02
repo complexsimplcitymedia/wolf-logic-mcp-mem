@@ -1,0 +1,97 @@
+version: '3.9'
+
+services:
+  # AMD ROCM Job Agent
+  job-agent:
+    build:
+      context: .
+      dockerfile: server/Job Agent/Dockerfile.rocm
+    container_name: wolf_logic_job_agent
+    depends_on:
+      - api
+    environment:
+      # ROCM GPU Configuration
+      HIP_VISIBLE_DEVICES: "0"
+      HIP_DEVICE_ORDER: "PCI"
+      ROCM_HOME: "/opt/rocm"
+
+      # PyTorch Configuration
+      PYTORCH_ROCM_ARCH: "gfx1030"
+
+      # Ollama Configuration
+      OLLAMA_HOST: "http://ollama:11434"
+      OLLAMA_MODEL: "llama3.2:latest"
+
+      # GPU Optimization
+      OMP_NUM_THREADS: "8"
+      MKL_NUM_THREADS: "8"
+
+    # Mount GPU device
+    devices:
+      - /dev/kfd:/dev/kfd
+      - /dev/dri:/dev/dri
+
+    # Volume for job logs
+    volumes:
+      - ./server/Job Agent:/app
+      - job_agent_logs:/app/logs
+      - rocm_cache:/root/.cache
+
+    networks:
+      - wolf-logic-net
+
+    healthcheck:
+      test: ["CMD", "python3", "-c", "import torch; assert torch.cuda.is_available()"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+    restart: unless-stopped
+
+  # Ollama Service (AMD ROCM)
+  ollama:
+    image: ollama/ollama:latest
+    container_name: ollama_rocm
+
+    environment:
+      # ROCM Configuration
+      HIP_VISIBLE_DEVICES: "0"
+      HIP_DEVICE_ORDER: "PCI"
+
+    # Mount GPU device
+    devices:
+      - /dev/kfd:/dev/kfd
+      - /dev/dri:/dev/dri
+
+    volumes:
+      - ollama_models:/root/.ollama
+      - ollama_cache:/root/.cache
+
+    ports:
+      - "11434:11434"
+
+    networks:
+      - wolf-logic-net
+
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:11434/api/tags"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+    restart: unless-stopped
+
+volumes:
+  job_agent_logs:
+    driver: local
+  rocm_cache:
+    driver: local
+  ollama_models:
+    driver: local
+  ollama_cache:
+    driver: local
+
+networks:
+  wolf-logic-net:
+    driver: bridge
+

@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wolf Logic - Dashboard</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
+            color: #fff;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 40px;
+            padding: 20px 0;
+            border-bottom: 2px solid #444;
+        }
+
+        h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            color: #fff;
+        }
+
+        .subtitle {
+            color: #aaa;
+            font-size: 0.9em;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin-bottom: 40px;
+        }
+
+        .card {
+            background: #2a2a2a;
+            border: 1px solid #444;
+            border-radius: 8px;
+            padding: 20px;
+            transition: all 0.3s ease;
+        }
+
+        .card:hover {
+            border-color: #666;
+            background: #323232;
+        }
+
+        .card h2 {
+            margin-bottom: 15px;
+            font-size: 1.3em;
+        }
+
+        .card p {
+            color: #aaa;
+            margin-bottom: 10px;
+            line-height: 1.6;
+        }
+
+        .status {
+            display: flex;
+            align-items: center;
+            margin-top: 15px;
+            font-size: 0.9em;
+        }
+
+        .status-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            margin-right: 8px;
+            display: inline-block;
+        }
+
+        .status-dot.online {
+            background-color: #4ade80;
+            box-shadow: 0 0 10px #4ade80;
+        }
+
+        .status-dot.offline {
+            background-color: #ef4444;
+            box-shadow: 0 0 10px #ef4444;
+        }
+
+        .nav {
+            display: flex;
+            gap: 15px;
+            margin-top: 15px;
+        }
+
+        .btn {
+            flex: 1;
+            padding: 10px;
+            background: #444;
+            border: none;
+            border-radius: 4px;
+            color: #fff;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            text-align: center;
+        }
+
+        .btn:hover {
+            background: #555;
+        }
+
+        .btn.primary {
+            background: #3b82f6;
+        }
+
+        .btn.primary:hover {
+            background: #2563eb;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🐺 Wolf Logic</h1>
+            <p class="subtitle">Pure Python Local LLM System</p>
+        </header>
+
+        <div class="grid">
+            <div class="card">
+                <h2>💬 Chat</h2>
+                <p>Interact with local LLM models</p>
+                <div class="status" id="api-status">
+                    <span class="status-dot offline"></span>
+                    <span>Connecting...</span>
+                </div>
+                <div class="nav">
+                    <a href="/chat" class="btn primary">Open Chat</a>
+                </div>
+            </div>
+
+            <div class="card">
+                <h2>🔍 Search</h2>
+                <p>Search through stored memories</p>
+                <div class="status" id="qdrant-status">
+                    <span class="status-dot offline"></span>
+                    <span>Checking...</span>
+                </div>
+                <div class="nav">
+                    <a href="/search" class="btn primary">Search Memories</a>
+                </div>
+            </div>
+
+            <div class="card">
+                <h2>⚙️ Settings</h2>
+                <p>Configure models and system settings</p>
+                <div class="status" id="ollama-status">
+                    <span class="status-dot offline"></span>
+                    <span>Loading...</span>
+                </div>
+                <div class="nav">
+                    <a href="/settings" class="btn">Configure</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        async function checkHealth() {
+            try {
+                const response = await fetch('/api/health');
+                if (response.ok) {
+                    updateStatus('api-status', true);
+                } else {
+                    updateStatus('api-status', false);
+                }
+            } catch (e) {
+                updateStatus('api-status', false);
+            }
+        }
+
+        function updateStatus(elementId, online) {
+            const element = document.getElementById(elementId);
+            const dot = element.querySelector('.status-dot');
+            const text = element.querySelector('span:last-child');
+
+            if (online) {
+                dot.classList.remove('offline');
+                dot.classList.add('online');
+                text.textContent = 'Online';
+            } else {
+                dot.classList.remove('online');
+                dot.classList.add('offline');
+                text.textContent = 'Offline';
+            }
+        }
+
+        // Check health every 5 seconds
+        checkHealth();
+        setInterval(checkHealth, 5000);
+    </script>
+</body>
+</html>
+

@@ -1,0 +1,28 @@
+# core
+flask==3.1.0
+Werkzeug==3.1.3
+jinja2==3.1.6
+
+# DB
+flask_sqlalchemy==3.1.1
+flask_migrate==4.1.0
+sqlalchemy==2.0.38
+
+# tools
+flask_login==0.6.3
+
+# HTTP client for API communication
+requests==2.31.0
+
+# PostgreSQL client for PgVector
+psycopg2-binary==2.9.9
+
+# env
+python-dotenv==1.0.1
+
+# deployment
+gunicorn==23.0.0
+Flask-Minify==0.49
+
+# CORS support
+flask-cors==4.0.0

@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>{% block title %}{% endblock title %} | OpenMemory</title>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0, minimal-ui" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="description" content="OpenMemory - Personalized AI memory layer for your applications" />
+  <meta name="keywords" content="OpenMemory, AI Memory, Mem0, Vector Database, Memory Management" />
+  <meta name="author" content="Mem0.ai" />
+
+  {% include 'includes/styles.html' %}
+
+  {% block extrastyle %}{% endblock extrastyle %}
+
+</head>
+<body>
+  {% block loader %}
+    {% include 'includes/loader.html' %}
+  {% endblock loader %}
+
+  {% block header %}
+    {% include 'includes/navigation-memory.html' %}
+  {% endblock header %}
+
+  {% block sidebar %}
+    {% include 'includes/sidebar-memory.html' %}
+  {% endblock sidebar %}
+
+  <!-- [ Main Content ] start -->
+  <div class="pc-container">
+    <div class="pc-content">
+
+      <!-- Flash messages -->
+      {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+          <div class="row">
+            <div class="col-12">
+              {% for category, message in messages %}
+                <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
+                  {{ message }}
+                  <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+              {% endfor %}
+            </div>
+          </div>
+        {% endif %}
+      {% endwith %}
+
+      {% block content %}{% endblock content %}
+
+    </div>
+  </div>
+  <!-- [ Main Content ] end -->
+
+  {% block footer %}
+    {% include 'includes/footer.html' %}
+  {% endblock footer %}
+
+  {% include 'includes/scripts.html' %}
+
+  {% block extra_js %}{% endblock extra_js %}
+</body>
+</html>

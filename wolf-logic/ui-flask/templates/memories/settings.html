@@ -1,0 +1,121 @@
+{% extends 'memories/base.html' %}
+
+{% block title %}Settings{% endblock title %}
+
+{% block content %}
+<!-- [ breadcrumb ] start -->
+<div class="page-header">
+  <div class="page-block">
+    <div class="row align-items-center">
+      <div class="col-md-12">
+        <div class="page-header-title">
+          <h5 class="m-b-10">Settings</h5>
+        </div>
+        <ul class="breadcrumb">
+          <li class="breadcrumb-item"><a href="{{ url_for('memories_blueprint.dashboard') }}">Home</a></li>
+          <li class="breadcrumb-item" aria-current="page">Settings</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- [ breadcrumb ] end -->
+
+<div class="row">
+  <div class="col-lg-8">
+    <div class="card">
+      <div class="card-header">
+        <h5>Configuration</h5>
+      </div>
+      <div class="card-body">
+        <form method="POST" action="{{ url_for('memories_blueprint.settings') }}">
+
+          <!-- LLM Configuration -->
+          <h6 class="mb-3">LLM Configuration</h6>
+          <div class="row g-3 mb-4">
+            <div class="col-md-6">
+              <label for="llm_provider" class="form-label">LLM Provider</label>
+              <input type="text" class="form-control" id="llm_provider" name="llm_provider"
+                     value="{{ config.get('llm_config', {}).get('provider', 'ollama') }}">
+            </div>
+            <div class="col-md-6">
+              <label for="llm_model" class="form-label">LLM Model</label>
+              <input type="text" class="form-control" id="llm_model" name="llm_model"
+                     value="{{ config.get('llm_config', {}).get('model', 'gpt-4o-mini') }}">
+            </div>
+          </div>
+
+          <!-- Embedder Configuration -->
+          <h6 class="mb-3">Embedder Configuration</h6>
+          <div class="row g-3 mb-4">
+            <div class="col-md-6">
+              <label for="embedder_provider" class="form-label">Embedder Provider</label>
+              <input type="text" class="form-control" id="embedder_provider" name="embedder_provider"
+                     value="{{ config.get('embedder_config', {}).get('provider', 'ollama') }}">
+            </div>
+            <div class="col-md-6">
+              <label for="embedder_model" class="form-label">Embedder Model</label>
+              <input type="text" class="form-control" id="embedder_model" name="embedder_model"
+                     value="{{ config.get('embedder_config', {}).get('model', 'text-embedding-3-small') }}">
+            </div>
+          </div>
+
+          <!-- Custom Instructions -->
+          <h6 class="mb-3">Custom Instructions</h6>
+          <div class="mb-4">
+            <label for="custom_instructions" class="form-label">Custom Instructions</label>
+            <textarea class="form-control" id="custom_instructions" name="custom_instructions" rows="4"
+                      placeholder="Add custom instructions for memory processing...">{{ config.get('custom_instructions', '') }}</textarea>
+            <div class="form-text">
+              These instructions will be used when processing and categorizing memories.
+            </div>
+          </div>
+
+          <div class="d-flex justify-content-end">
+            <button type="submit" class="btn btn-primary">
+              <i class="ti ti-check me-1"></i> Save Configuration
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-lg-4">
+    <div class="card">
+      <div class="card-header">
+        <h5>System Information</h5>
+      </div>
+      <div class="card-body">
+        <div class="mb-3">
+          <small class="text-muted d-block">User ID</small>
+          <strong>{{ config.get('user_id', 'N/A') }}</strong>
+        </div>
+        <div class="mb-3">
+          <small class="text-muted d-block">API Version</small>
+          <strong>v1</strong>
+        </div>
+        <div class="mb-3">
+          <small class="text-muted d-block">Backend URL</small>
+          <small class="font-monospace">{{ config.get('api_url', 'N/A') }}</small>
+        </div>
+      </div>
+    </div>
+
+    <div class="card mt-3">
+      <div class="card-header">
+        <h5>Quick Actions</h5>
+      </div>
+      <div class="card-body">
+        <a href="{{ url_for('memories_blueprint.export_memories') }}" class="btn btn-outline-primary w-100 mb-2">
+          <i class="ti ti-download me-1"></i> Export Memories
+        </a>
+        <a href="https://docs.wolf-logic.ai" target="_blank" class="btn btn-outline-secondary w-100">
+          <i class="ti ti-book me-1"></i> View Documentation
+        </a>
+      </div>
+    </div>
+  </div>
+</div>
+
+{% endblock content %}

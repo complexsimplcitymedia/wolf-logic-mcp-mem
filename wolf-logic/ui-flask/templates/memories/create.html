@@ -1,0 +1,82 @@
+{% extends 'memories/base.html' %}
+
+{% block title %}Create Memory{% endblock title %}
+
+{% block content %}
+<!-- [ breadcrumb ] start -->
+<div class="page-header">
+  <div class="page-block">
+    <div class="row align-items-center">
+      <div class="col-md-12">
+        <div class="page-header-title">
+          <h5 class="m-b-10">Create Memory</h5>
+        </div>
+        <ul class="breadcrumb">
+          <li class="breadcrumb-item"><a href="{{ url_for('memories_blueprint.dashboard') }}">Home</a></li>
+          <li class="breadcrumb-item"><a href="{{ url_for('memories_blueprint.memories') }}">Memories</a></li>
+          <li class="breadcrumb-item" aria-current="page">Create</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- [ breadcrumb ] end -->
+
+<div class="row justify-content-center">
+  <div class="col-md-8">
+    <div class="card">
+      <div class="card-header">
+        <h5>Create New Memory</h5>
+      </div>
+      <div class="card-body">
+        <form method="POST" action="{{ url_for('memories_blueprint.create_memory') }}">
+          <div class="mb-3">
+            <label for="text" class="form-label">Memory Content <span class="text-danger">*</span></label>
+            <textarea class="form-control" id="text" name="text" rows="6"
+                      placeholder="Enter the memory content..." required></textarea>
+            <div class="form-text">
+              This content will be processed and stored as a memory. Categories will be automatically generated.
+            </div>
+          </div>
+
+          <div class="mb-3">
+            <label for="app_name" class="form-label">Application Name</label>
+            <input type="text" class="form-control" id="app_name" name="app_name"
+                   value="openmemory-ui" placeholder="openmemory-ui">
+            <div class="form-text">
+              The application that is creating this memory.
+            </div>
+          </div>
+
+          <div class="d-flex justify-content-between">
+            <a href="{{ url_for('memories_blueprint.memories') }}" class="btn btn-secondary">
+              <i class="ti ti-arrow-left me-1"></i> Cancel
+            </a>
+            <button type="submit" class="btn btn-primary">
+              <i class="ti ti-check me-1"></i> Create Memory
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- Info Card -->
+    <div class="card mt-3">
+      <div class="card-body">
+        <h6 class="mb-2"><i class="ti ti-info-circle me-2"></i>About Memories</h6>
+        <p class="text-muted mb-2 small">
+          Memories are pieces of information that OpenMemory stores and makes retrievable for your applications.
+          When you create a memory:
+        </p>
+        <ul class="text-muted small mb-0">
+          <li>The content is embedded using vector embeddings for semantic search</li>
+          <li>Categories are automatically generated using AI to organize your memories</li>
+          <li>The memory becomes immediately searchable and accessible to your apps</li>
+          <li>You can pause, archive, or delete memories at any time</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>
+
+{% endblock content %}
