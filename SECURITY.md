@@ -59,7 +59,7 @@ If you discover a security vulnerability in this project, please report it respo
 3. Include detailed information about the vulnerability and steps to reproduce
 4. Allow reasonable time for the vulnerability to be patched before public disclosure
 
-For contact information, please check the repository's `.github/SECURITY.md` or contact the repository owner directly through GitHub.
+Contact the repository owner directly through GitHub for security-related communications.
 
 ## Security Updates
 
